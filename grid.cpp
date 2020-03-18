@@ -8,14 +8,15 @@
  *
  * You are encouraged to use STL container types as an underlying storage mechanism for the grid cells.
  *
- * @author YOUR_STUDENT_NUMBER
+ * @author 959133
  * @date March, 2020
  */
 #include "grid.h"
 
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
-
+#include <stdlib.h>
+#include <iostream>
 /**
  * Grid::Grid()
  *
@@ -28,7 +29,11 @@
  *      Grid grid;
  *
  */
-
+Grid::Grid(){
+    this->width = 0;
+    this->height = 0;
+    this->totalCells = 0;
+};
 
 /**
  * Grid::Grid(square_size)
@@ -53,7 +58,11 @@
  * @param square_size
  *      The edge size to use for the width and height of the grid.
  */
-
+Grid::Grid(int square_size){
+     this->width = square_size;
+     this->height = square_size;
+     this->totalCells = square_size * square_size;
+};
 
 /**
  * Grid::Grid(width, height)
@@ -71,7 +80,11 @@
  * @param height
  *      The height of the grid.
  */
-
+Grid::Grid(int width, int height){
+    this->width = width;
+    this->height = height;
+    this->totalCells = width * height;
+};
 
 /**
  * Grid::get_width()
@@ -96,7 +109,10 @@
  * @return
  *      The width of the grid.
  */
-
+int Grid::get_width(){
+     std::cout << get_width() << std::endl;
+    return this->width;
+};
 
 /**
  * Grid::get_height()
@@ -121,7 +137,10 @@
  * @return
  *      The height of the grid.
  */
-
+int Grid::get_height(){
+    std::cout << get_height() << std::endl;
+    return this->height;
+};
 
 /**
  * Grid::get_total_cells()
@@ -146,7 +165,10 @@
  * @return
  *      The number of total cells.
  */
-
+int Grid::get_total_cells(){
+    std::cout << get_total_cells() << std::endl;
+    return totalCells;
+};
 
 /**
  * Grid::get_alive_cells()
@@ -171,7 +193,10 @@
  * @return
  *      The number of alive cells.
  */
-
+int Grid::get_alive_cells(){
+    std::cout << get_alive_cells() << std::endl;
+    return this->deadCells;
+};
 
 /**
  * Grid::get_dead_cells()
@@ -196,7 +221,10 @@
  * @return
  *      The number of dead cells.
  */
-
+int Grid::get_dead_cells(){
+    std::cout << get_dead_cells() << std::endl;
+    return this->deadCells;
+};
 
 /**
  * Grid::resize(square_size)
@@ -209,7 +237,7 @@
  *      // Make a grid
  *      Grid grid(4, 4);
  *
- *      // Resize the grid to be 8x8
+ *      // Resize the grid to be 8x8 
  *      grid.resize(8);
  *
  * @param square_size
