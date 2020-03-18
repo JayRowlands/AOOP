@@ -11,12 +11,14 @@
  * @author 959133
  * @date March, 2020
  */
-#include "grid.h"
 
+#include "grid.h"
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
 #include <stdlib.h>
 #include <iostream>
+#include <stdio.h>
+
 /**
  * Grid::Grid()
  *
@@ -33,6 +35,8 @@ Grid::Grid(){
     this->width = 0;
     this->height = 0;
     this->totalCells = 0;
+    this->numAliveCells = 0;
+    this->numDeadCells = 0;
 };
 
 /**
@@ -59,9 +63,13 @@ Grid::Grid(){
  *      The edge size to use for the width and height of the grid.
  */
 Grid::Grid(int square_size){
-     this->width = square_size;
-     this->height = square_size;
-     this->totalCells = square_size * square_size;
+    this->width = square_size;
+    this->height = square_size;
+    this->totalCells = square_size * square_size;
+    this->numAliveCells = 0;
+    this->numDeadCells = width * height;
+    
+
 };
 
 /**
@@ -84,6 +92,8 @@ Grid::Grid(int width, int height){
     this->width = width;
     this->height = height;
     this->totalCells = width * height;
+    this->numAliveCells = 0;
+    this->numDeadCells = width * height;
 };
 
 /**
@@ -110,7 +120,7 @@ Grid::Grid(int width, int height){
  *      The width of the grid.
  */
 int Grid::get_width(){
-     std::cout << get_width() << std::endl;
+     std::cout << this->width << std::endl;
     return this->width;
 };
 
@@ -138,7 +148,7 @@ int Grid::get_width(){
  *      The height of the grid.
  */
 int Grid::get_height(){
-    std::cout << get_height() << std::endl;
+    std::cout << this->height << std::endl;
     return this->height;
 };
 
@@ -166,8 +176,8 @@ int Grid::get_height(){
  *      The number of total cells.
  */
 int Grid::get_total_cells(){
-    std::cout << get_total_cells() << std::endl;
-    return totalCells;
+    std::cout << this->totalCells<< std::endl;
+    return this->totalCells;
 };
 
 /**
@@ -194,8 +204,8 @@ int Grid::get_total_cells(){
  *      The number of alive cells.
  */
 int Grid::get_alive_cells(){
-    std::cout << get_alive_cells() << std::endl;
-    return this->deadCells;
+    std::cout << this->numAliveCells << std::endl;
+    return this->numAliveCells;
 };
 
 /**
@@ -222,8 +232,8 @@ int Grid::get_alive_cells(){
  *      The number of dead cells.
  */
 int Grid::get_dead_cells(){
-    std::cout << get_dead_cells() << std::endl;
-    return this->deadCells;
+    std::cout << this->numDeadCells << std::endl;
+    return this->numDeadCells;
 };
 
 /**
@@ -243,7 +253,9 @@ int Grid::get_dead_cells(){
  * @param square_size
  *      The new edge size for both the width and height of the grid.
  */
-
+void Grid::resize(int square_size){
+    
+}
 
 /**
  * Grid::resize(width, height)
@@ -265,7 +277,15 @@ int Grid::get_dead_cells(){
  * @param new_height
  *      The new height for the grid.
  */
+void Grid::resize(int new_width, int new_height){
+    //int prevTotalCells = this->totalCells;
+    //int newDeadCells = totalCells - prevTotalCells;
 
+    this->width = new_width;
+    this->height = new_height;
+    this->totalCells = new_width * new_height;
+    this->numDeadCells = totalCells;
+}
 
 /**
  * Grid::get_index(x, y)
@@ -283,7 +303,12 @@ int Grid::get_dead_cells(){
  * @return
  *      The 1d offset from the start of the data array where the desired cell is located.
  */
+int Grid::get_index(int x, int y) {
+    int offset;
 
+
+    return offset;
+}
 
 /**
  * Grid::get(x, y)

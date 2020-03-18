@@ -33,10 +33,11 @@ private:
     int width;
     int height;
     int totalCells;
-    int aliveCells;
-    int deadCells;
+    int numAliveCells;
+    int numDeadCells;
 
 public:
+
     Grid();
     Grid(int square_size);
     Grid(int width, int height);
@@ -45,5 +46,7 @@ public:
     int get_total_cells();
     int get_alive_cells();
     int get_dead_cells();
-
+    void resize(int square_size);
+    void resize(int new_width, int new_height);
+    int get_index(int x, int y);
 };
