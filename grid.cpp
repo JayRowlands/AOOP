@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <iostream>
 #include <stdio.h>
+#include <sstream>
 
 /**
  * Grid::Grid()
@@ -37,6 +38,8 @@ Grid::Grid(){
     this->totalCells = 0;
     this->numAliveCells = 0;
     this->numDeadCells = 0;
+
+    grid.resize(0);
 };
 
 /**
@@ -63,13 +66,15 @@ Grid::Grid(){
  *      The edge size to use for the width and height of the grid.
  */
 Grid::Grid(int square_size){
+   
     this->width = square_size;
     this->height = square_size;
     this->totalCells = square_size * square_size;
     this->numAliveCells = 0;
-    this->numDeadCells = width * height;
-    
+    this->numDeadCells = square_size*square_size;  
 
+    grid.resize(square_size*square_size, Cell::DEAD);
+    
 };
 
 /**
@@ -93,8 +98,25 @@ Grid::Grid(int width, int height){
     this->height = height;
     this->totalCells = width * height;
     this->numAliveCells = 0;
-    this->numDeadCells = width * height;
-};
+    this->numDeadCells = width*height;  
+
+    grid.resize(width*height, Cell::DEAD);
+
+    /*
+    for (int y = 0; y < get_height(); y++) {
+        for (int x = 0; x < get_width(); x++) {
+            Cell v = get(x,y);
+            if (v == 32) {
+                std::cout << " ";
+            } else if (v == 35) {
+                std::cout << "#";
+            }
+        }
+        std::cout << "|\n";  
+    }
+    std::cout << "\n";
+    */
+}
 
 /**
  * Grid::get_width()
@@ -119,8 +141,7 @@ Grid::Grid(int width, int height){
  * @return
  *      The width of the grid.
  */
-int Grid::get_width(){
-     std::cout << this->width << std::endl;
+int Grid::get_width() const{
     return this->width;
 };
 
@@ -147,8 +168,7 @@ int Grid::get_width(){
  * @return
  *      The height of the grid.
  */
-int Grid::get_height(){
-    std::cout << this->height << std::endl;
+int Grid::get_height() const{
     return this->height;
 };
 
@@ -175,8 +195,7 @@ int Grid::get_height(){
  * @return
  *      The number of total cells.
  */
-int Grid::get_total_cells(){
-    std::cout << this->totalCells<< std::endl;
+int Grid::get_total_cells() const{
     return this->totalCells;
 };
 
@@ -203,8 +222,7 @@ int Grid::get_total_cells(){
  * @return
  *      The number of alive cells.
  */
-int Grid::get_alive_cells(){
-    std::cout << this->numAliveCells << std::endl;
+int Grid::get_alive_cells() const{
     return this->numAliveCells;
 };
 
@@ -231,8 +249,7 @@ int Grid::get_alive_cells(){
  * @return
  *      The number of dead cells.
  */
-int Grid::get_dead_cells(){
-    std::cout << this->numDeadCells << std::endl;
+int Grid::get_dead_cells() const{
     return this->numDeadCells;
 };
 
@@ -255,7 +272,7 @@ int Grid::get_dead_cells(){
  */
 void Grid::resize(int square_size){
     
-}
+};
 
 /**
  * Grid::resize(width, height)
@@ -277,15 +294,76 @@ void Grid::resize(int square_size){
  * @param new_height
  *      The new height for the grid.
  */
-void Grid::resize(int new_width, int new_height){
-    //int prevTotalCells = this->totalCells;
-    //int newDeadCells = totalCells - prevTotalCells;
+void Grid::resize(int new_width, int new_height){   
+    
+    this->totalCells = new_width * new_height;
+   
+    std::vector<Cell> temp(this->width*this->height);
 
+    temp = this->grid;
+
+    this->grid.clear();
+    this->grid.resize(new_width*new_height, Cell::DEAD);
+
+    int oldWidth = this->width;
+    int oldHeight = this->height;
+    if(this->width*this->height > new_width*new_height){ 
+        //Get smaller
+        for(int y = 0; y < new_height; y++) {
+            for(int x = 0; x < new_width; x++) {
+                try {
+                    if(temp[get_index(x,y)] == Cell::ALIVE) {
+                        this->height = new_height;
+                        this->width = new_width;
+                        this->set(x,y, Cell::ALIVE);
+                        this->width = oldWidth;
+                        this->height = oldHeight;
+                    }
+                } catch (const std::exception &) {
+
+                }
+                
+            }
+        }
+    } else {
+        //Get larger
+        for(int y = 0; y < this->height; y++) {
+            for(int x = 0; x < this->width; x++) {
+                try {
+                    if(temp[get_index(x,y)] == Cell::ALIVE) {
+                        this->width = new_width;
+                        this->height = new_height;
+                        this->set(x,y, Cell::ALIVE);
+                        this->width = oldWidth;
+                        this->height = oldHeight;
+                    } else {
+                        this->width = new_width;
+                        this->height = new_height;
+                        this->set(x,y, Cell::DEAD);
+                        this->width = oldWidth;
+                        this->height = oldHeight;
+                    }
+                } catch(const std::exception &) {
+
+                }
+            }
+        }
+    }
     this->width = new_width;
     this->height = new_height;
-    this->totalCells = new_width * new_height;
-    this->numDeadCells = totalCells;
-}
+
+    int count = 0;
+
+    for(int i = 0; i < width*height; i++) {
+        if(grid[i] == Cell::ALIVE) {
+            count++;
+        }
+    }
+    
+    this->numAliveCells = count;
+    this->numDeadCells = this->totalCells - this-> numAliveCells;
+
+};
 
 /**
  * Grid::get_index(x, y)
@@ -303,12 +381,9 @@ void Grid::resize(int new_width, int new_height){
  * @return
  *      The 1d offset from the start of the data array where the desired cell is located.
  */
-int Grid::get_index(int x, int y) {
-    int offset;
-
-
-    return offset;
-}
+int Grid::get_index(int x, int y) const{
+    return y * get_width() + x;
+};
 
 /**
  * Grid::get(x, y)
@@ -338,7 +413,14 @@ int Grid::get_index(int x, int y) {
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
+Cell Grid::get(int x, int y) const{
+    if(x > get_width() || x < 0 || y > get_height() || y < 0) {
+        throw std::exception();
+    }
+    
+    return operator()(x,y);
 
+};
 
 /**
  * Grid::set(x, y, value)
@@ -366,7 +448,25 @@ int Grid::get_index(int x, int y) {
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
+void Grid::set(int x, int y, Cell value){
+    if(x > get_width() || x < 0 || y > get_height() || y < 0) {
+        throw std::exception();
+    }
+    
+    if(value == Cell::ALIVE) {
+        this->numAliveCells++;
+        this->numDeadCells--;
+    } else { 
+        if(get(x,y) == Cell::ALIVE){
+            this->numAliveCells--;
+        }
+        this->numDeadCells++;
+    }
 
+    Cell& reference = operator()(x,y);
+    reference = value;
+    grid[get_index(x,y)] = reference;
+};
 
 /**
  * Grid::operator()(x, y)
@@ -403,7 +503,13 @@ int Grid::get_index(int x, int y) {
  * @throws
  *      std::runtime_error or sub-class if x,y is not a valid coordinate within the grid.
  */
-
+Cell& Grid::operator()(int x, int y) {
+    if(x > get_width() || x < 0 || y > get_height() || y < 0) {
+        throw std::runtime_error("Coordinates out of scope");
+    }
+    
+    return grid[get_index(x,y)];
+}
 
 /**
  * Grid::operator()(x, y)
@@ -435,7 +541,14 @@ int Grid::get_index(int x, int y) {
  * @throws
  *      std::exception or sub-class if x,y is not a valid coordinate within the grid.
  */
-
+const Cell& Grid::operator()(int x, int y) const {
+    if(x > get_width() || x < 0 || y > get_height() || y < 0) {
+        throw std::runtime_error("Coordinates out of scope");
+    }
+    
+    const Cell& reference = grid[get_index(x,y)];
+    return reference;
+}
 
 /**
  * Grid::crop(x0, y0, x1, y1)

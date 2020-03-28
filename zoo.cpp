@@ -18,7 +18,7 @@
  *                padded with zero or more 0 bits.
  *              - a 0 bit should be considered Cell::DEAD, a 1 bit should be considered Cell::ALIVE.
  *
- * @author YOUR_STUDENT_NUMBER
+ * @author 959133
  * @date March, 2020
  */
 #include "zoo.h"

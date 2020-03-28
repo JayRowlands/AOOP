@@ -5,11 +5,12 @@
  * The test suites provide granular BDD style (Behaviour Driven Development) test cases
  * which will help further understand the specification you need to code to.
  *
- * @author YOUR_STUDENT_NUMBER
+ * @author 959133
  * @date March, 2020
  */
 #pragma once
 
+#include <vector>
 // Add the minimal number of includes you need in order to declare the class.
 // #include ...
 
@@ -38,15 +39,23 @@ private:
 
 public:
 
+    std::vector<Cell> grid;
     Grid();
-    Grid(int square_size);
+    
+    explicit Grid(int square_size);
     Grid(int width, int height);
-    int get_width();
-    int get_height();
-    int get_total_cells();
-    int get_alive_cells();
-    int get_dead_cells();
+
+    int get_width() const;
+    int get_height() const;
+    int get_total_cells() const;
+    int get_alive_cells() const;
+    int get_dead_cells() const;
     void resize(int square_size);
     void resize(int new_width, int new_height);
-    int get_index(int x, int y);
+    int get_index(int x, int y) const;
+    Cell get(int x, int y) const;
+    void set(int x, int y, Cell value);
+
+    Cell& operator()(int x, int y);
+    const Cell& operator()(int x, int y) const; 
 };
