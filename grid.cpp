@@ -643,7 +643,38 @@ Grid Grid::crop(int x0,int y0,int x1,int y1) const{
  * @throws
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
-
+void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
+    /*
+    std::cout << "Before" << std::endl;
+    for(int y = 0; y < other.height; y++) {
+        for(int x = 0; x < other.width; x++) {
+            Cell v = other.get(x,y);
+            if(v == 32) {
+                std::cout << " ";
+            } else if(v == 35) {
+                std::cout << "#";
+            }
+        }
+        std::cout << "|\n";
+    }
+    std::cout << "\n";
+    */
+    for(int y = y0; y < other.height+y0; y++) {
+        for(int x = x0; x < other.width+x0; x++) {
+            if(alive_only == true) {
+                if(other.get(x-x0,y-y0) == Cell::ALIVE) {
+                    grid[get_index(x,y)] = Cell::ALIVE;
+                } else if(get(x,y) == Cell::ALIVE){
+                    grid[get_index(x,y)] = Cell::ALIVE;
+                } else {    
+                    grid[get_index(x,y)] = other.get(x-x0,y-y0);
+                }
+            } else {
+                grid[get_index(x,y)] = other.get(x-x0,y-y0);
+            }
+        }
+    }
+}
 
 /**
  * Grid::rotate(rotation)
