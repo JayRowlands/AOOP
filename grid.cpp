@@ -644,6 +644,9 @@ Grid Grid::crop(int x0,int y0,int x1,int y1) const{
  *      std::exception or sub-class if the other grid being placed does not fit within the bounds of the current grid.
  */
 void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
+    if (other.height*other.width > get_total_cells() || other.height*other.width < 0) {
+        throw std::exception();
+    }
     /*
     std::cout << "Before" << std::endl;
     for(int y = 0; y < other.height; y++) {
