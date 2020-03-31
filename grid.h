@@ -33,9 +33,6 @@ class Grid {
 private:
     int width;
     int height;
-    int totalCells;
-    int numAliveCells;
-    int numDeadCells;
 
 public:
 
@@ -55,6 +52,7 @@ public:
     int get_index(int x, int y) const;
     Cell get(int x, int y) const;
     void set(int x, int y, Cell value);
+    Grid crop(int x0, int y0, int x1, int y1) const;
 
     Cell& operator()(int x, int y);
     const Cell& operator()(int x, int y) const; 
