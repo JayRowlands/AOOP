@@ -41,7 +41,7 @@ Grid::Grid(){
     this->height = 0;
 
     grid.resize(0);
-};
+}
 
 /**
  * Grid::Grid(square_size)
@@ -73,7 +73,7 @@ Grid::Grid(int square_size){
 
     grid.resize(square_size*square_size, Cell::DEAD);
     
-};
+}
 
 /**
  * Grid::Grid(width, height)

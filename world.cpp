@@ -37,7 +37,12 @@
  *      World world;
  *
  */
+World::World() {
+    this->width = 0;
+    this->height = 0;
 
+    world.resize(0);
+}
 
 /**
  * World::World(square_size)
@@ -58,7 +63,12 @@
  * @param square_size
  *      The edge size to use for the width and height of the world.
  */
+World::World(int square_size) {
+    this->width = square_size;
+    this->height = square_size;
 
+    world.resize(square_size*square_size);
+}
 
 /**
  * World::World(width, height)
@@ -75,7 +85,12 @@
  * @param height
  *      The height of the world.
  */
+World::World(int width, int height) {
+    this->width = width;
+    this->height = height;
 
+    World world(width*height);
+}
 
 /**
  * World::World(initial_state)
@@ -96,7 +111,15 @@
  * @param initial_state
  *      The state of the constructed world.
  */
+World::World(Grid initial_state) {
+    this->width = initial_state.get_width();
+    this->height = initial_state.get_height();
+    
+    world.resize(width*height);
 
+    for (long unsigned int i=0; i< initial_state.grid.size(); i++) 
+        world.push_back(initial_state.grid[i]); 
+}
 
 /**
  * World::get_width()
@@ -121,7 +144,9 @@
  * @return
  *      The width of the world.
  */
-
+int World::get_width() const {
+    return this->width;
+};
 
 /**
  * World::get_height()
@@ -146,7 +171,9 @@
  * @return
  *      The height of the world.
  */
-
+int World::get_height() const {
+    return this->height;
+};
 
 /**
  * World::get_total_cells()
@@ -171,7 +198,9 @@
  * @return
  *      The number of total cells.
  */
-
+int World::get_total_cells() const{
+    return this->width*this->height;
+};
 
 /**
  * World::get_alive_cells()
@@ -196,7 +225,16 @@
  * @return
  *      The number of alive cells.
  */
-
+int World::get_alive_cells() const{
+    int alive = 0;
+    for(auto it = std::begin(world); it != std::end(world); it++) {
+        if(*it == Cell::ALIVE) {
+            alive++;
+        }
+    }
+    
+    return alive;
+};
 
 /**
  * World::get_dead_cells()
@@ -221,7 +259,10 @@
  * @return
  *      The number of dead cells.
  */
-
+int World::get_dead_cells() const{
+    int dead = get_total_cells() - get_alive_cells();
+    return dead;
+};
 
 /**
  * World::get_state()

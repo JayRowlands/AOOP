@@ -37,9 +37,9 @@ private:
 public:
 
     std::vector<Cell> grid;
-    Grid();
     
-    explicit Grid(int square_size);
+    Grid();
+    Grid(int square_size);
     Grid(int width, int height);
 
     int get_width() const;
