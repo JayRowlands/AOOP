@@ -9,8 +9,8 @@
  * @date March, 2020
  */
 #pragma once
-
 #include <vector>
+#include <iostream>
 // Add the minimal number of includes you need in order to declare the class.
 // #include ...
 
@@ -59,3 +59,5 @@ public:
     Cell& operator()(int x, int y);
     const Cell& operator()(int x, int y) const; 
 };
+
+std::ostream & operator<<(std::ostream & output_stream, const Grid grid);

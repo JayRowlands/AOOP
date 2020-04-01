@@ -20,6 +20,9 @@
 #include <stdio.h>
 #include <sstream>
 #include <algorithm>
+#include <vector>
+#include <iostream>
+#include <ostream>
 
 /**
  * Grid::Grid()
@@ -759,3 +762,29 @@ Grid Grid::rotate(int rotation) const{
  * @return
  *      Returns a reference to the output stream to enable operator chaining.
  */
+std::ostream & operator<<(std::ostream & output_stream, const Grid grid) { 
+    
+    output_stream << "+";
+    for(int i = 0; i < grid.get_width(); i++) {
+        output_stream << "-";
+    }
+    output_stream << "+\n";
+    for(int y = 0; y < grid.get_height(); y++) {
+        output_stream << "|";
+        for(int x = 0; x < grid.get_width(); x++) {
+            Cell v = grid.get(x,y);
+            if(v == 32) {
+                output_stream << " ";
+            } else if(v == 35) {
+                output_stream << "#";
+            }
+        }
+        output_stream << "|\n";
+    }
+    output_stream << "+";
+    for(int i = 0; i < grid.get_width(); i++) {
+        output_stream << "-";
+    }
+    output_stream << "+\n";
+    return output_stream;
+}
