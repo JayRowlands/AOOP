@@ -261,22 +261,22 @@ int Grid::get_dead_cells() const{
  */
 void Grid::resize(int square_size){
    
-    std::vector<Cell> temp(this->width*this->height);
+    std::vector<Cell> temp(get_total_cells());
 
     temp = this->grid;
 
     this->grid.clear();
     this->grid.resize(square_size*square_size, Cell::DEAD);
 
-    int oldWidth = this->width;
-    if(this->width*this->height > square_size*square_size){ 
+    int oldWidth = get_width();
+    if(get_total_cells() > square_size*square_size){ 
         //Get smaller
         for(int y = 0; y < get_height(); y++) {
-            for(int x = 0; x < square_size; x++) {
+            for(int x = 0; x < get_width(); x++) {
                 try {
                     if(temp[get_index(x,y)] == Cell::ALIVE) {
                         this->width = square_size;
-                        this->set(x,y, Cell::ALIVE);
+                        set(x,y, Cell::ALIVE);
                         this->width = oldWidth;
                     }
                 } catch (const std::exception &) {
@@ -287,29 +287,21 @@ void Grid::resize(int square_size){
         }
     } else {
         //Get larger
-        for(int y = 0; y < this->height; y++) {
-            for(int x = 0; x < this->width; x++) {
+        for(int y = 0; y < get_height(); y++) {
+            for(int x = 0; x < get_width(); x++) {
                 if(temp[get_index(x,y)] == Cell::ALIVE) {
                     this->width = square_size;
-                    this->set(x,y, Cell::ALIVE);
+                    set(x,y, Cell::ALIVE);
                     this->width = oldWidth;
                 } else {
                     this->width = square_size;
-                    this->set(x,y, Cell::DEAD);
+                    set(x,y, Cell::DEAD);
                     this->width = oldWidth;
                 }
             }
         }
     }
     this->width = square_size;
-
-    int count = 0;
-
-    for(int i = 0; i < width*height; i++) {
-        if(grid[i] == Cell::ALIVE) {
-            count++;
-        }
-    }
 };
 
 /**
@@ -334,14 +326,14 @@ void Grid::resize(int square_size){
  */
 void Grid::resize(int new_width, int new_height){   
 
-    std::vector<Cell> temp(this->width*this->height);
+    std::vector<Cell> temp(get_total_cells());
 
     temp = this->grid;
 
     this->grid.clear();
     this->grid.resize(new_width*new_height, Cell::DEAD);
 
-    int oldWidth = this->width;
+    int oldWidth = get_width();
     if(get_total_cells() > new_width*new_height){ 
 
         //Get smaller
@@ -350,7 +342,7 @@ void Grid::resize(int new_width, int new_height){
                 try {
                     if(temp[get_index(x,y)] == Cell::ALIVE) {
                         this->width = new_width;
-                        this->set(x,y, Cell::ALIVE);
+                        set(x,y, Cell::ALIVE);
                         this->width = oldWidth;
                     }
                 } catch (const std::exception &) {
@@ -365,11 +357,11 @@ void Grid::resize(int new_width, int new_height){
             for(int x = 0; x < get_width(); x++) {
                 if(temp[get_index(x,y)] == Cell::ALIVE) {
                     this->width = new_width;
-                    this->set(x,y, Cell::ALIVE);
+                    set(x,y, Cell::ALIVE);
                     this->width = oldWidth;
                 } else {
                     this->width = new_width;
-                    this->set(x,y, Cell::DEAD);
+                    set(x,y, Cell::DEAD);
                     this->width = oldWidth;
                 }
             }
@@ -656,14 +648,14 @@ void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
         for(int x = x0; x < other.width+x0; x++) {
             if(alive_only == true) {
                 if(other.get(x-x0,y-y0) == Cell::ALIVE) {
-                    grid[get_index(x,y)] = Cell::ALIVE;
+                    set(x,y, Cell::ALIVE);
                 } else if(get(x,y) == Cell::ALIVE){
-                    grid[get_index(x,y)] = Cell::ALIVE;
+                    set(x,y, Cell::ALIVE);
                 } else {    
-                    grid[get_index(x,y)] = other.get(x-x0,y-y0);
+                    set(x,y, other.get(x-x0,y-y0));
                 }
             } else {
-                grid[get_index(x,y)] = other.get(x-x0,y-y0);
+                set(x,y, other.get(x-x0,y-y0));
             }
         }
     }
@@ -692,32 +684,32 @@ void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
  *      Returns a copy of the grid that has been rotated.
  */
 Grid Grid::rotate(int rotation) const{
-    Grid temp(this->width*this->height);
+    Grid temp(get_total_cells());
     temp.grid.erase(temp.grid.begin(), temp.grid.end());
     temp.grid = this->grid;
     
-    temp.height = this->width;
-    temp.width = this->height;
+    temp.height = get_width();
+    temp.width = get_height();
 
     rotation = rotation%4;
 
     if (rotation == 1 || rotation == -3) {
-        for(int y = 0; y < this->height; y++) {
-            for(int x = 0; x < this->width; x++) {
-                temp.set(y,x, get(x,this->height-1-y));
+        for(int y = 0; y < get_height(); y++) {
+            for(int x = 0; x < get_width(); x++) {
+                temp.set(y,x, get(x,get_height()-1-y));
             }
         }
 
     } else if (rotation == -1 || rotation ==3 ) {
         for(int y = 0; y < get_height(); y++) {
             for(int x = 0; x < get_width(); x++) {
-                temp.set(y,x, get(this->width-1-x, y));
+                temp.set(y,x, get(get_width()-1-x, y));
             }
         }
     } else if (rotation == 2 || rotation == -2)  {
         
-        temp.width = this->width;
-        temp.height = this->height;
+        temp.width = get_width();
+        temp.height = get_height();
     
         std::reverse(temp.grid.begin(), temp.grid.end());
 
