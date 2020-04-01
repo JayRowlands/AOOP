@@ -19,6 +19,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <sstream>
+#include <algorithm>
 
 /**
  * Grid::Grid()
@@ -647,21 +648,7 @@ void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
     if (other.height*other.width > get_total_cells() || other.height*other.width < 0) {
         throw std::exception();
     }
-    /*
-    std::cout << "Before" << std::endl;
-    for(int y = 0; y < other.height; y++) {
-        for(int x = 0; x < other.width; x++) {
-            Cell v = other.get(x,y);
-            if(v == 32) {
-                std::cout << " ";
-            } else if(v == 35) {
-                std::cout << "#";
-            }
-        }
-        std::cout << "|\n";
-    }
-    std::cout << "\n";
-    */
+  
     for(int y = y0; y < other.height+y0; y++) {
         for(int x = x0; x < other.width+x0; x++) {
             if(alive_only == true) {
@@ -701,7 +688,41 @@ void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
  * @return
  *      Returns a copy of the grid that has been rotated.
  */
+Grid Grid::rotate(int rotation) const{
+    Grid temp(this->width*this->height);
+    temp.grid.erase(temp.grid.begin(), temp.grid.end());
+    temp.grid = this->grid;
+    
+    temp.height = this->width;
+    temp.width = this->height;
 
+    rotation = rotation%4;
+
+    if (rotation == 1 || rotation == -3) {
+        for(int y = 0; y < this->height; y++) {
+            for(int x = 0; x < this->width; x++) {
+                temp.set(y,x, get(x,this->height-1-y));
+            }
+        }
+
+    } else if (rotation == -1 || rotation ==3 ) {
+        for(int y = 0; y < get_height(); y++) {
+            for(int x = 0; x < get_width(); x++) {
+                temp.set(y,x, get(this->width-1-x, y));
+            }
+        }
+    } else if (rotation == 2 || rotation == -2)  {
+        
+        temp.width = this->width;
+        temp.height = this->height;
+    
+        std::reverse(temp.grid.begin(), temp.grid.end());
+
+    } else if(rotation == 0){
+        return *this;
+    }
+    return temp;
+}
 
 /**
  * operator<<(output_stream, grid)
@@ -738,4 +759,3 @@ void Grid::merge(Grid other, int x0, int y0, bool alive_only) {
  * @return
  *      Returns a reference to the output stream to enable operator chaining.
  */
-
