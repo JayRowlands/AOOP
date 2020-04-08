@@ -26,13 +26,11 @@ class World {
     //      Step 1. Draw a circle.
     //      Step 2. Draw the rest of the owl.
 private:
-    int width;
-    int height;
+    Grid world;
+    Grid nextWorld;
 
 public:
-    std::vector<Cell> world;
-    std::vector<Cell> worldCopy;
-
+   
     World();
     World(int square_size);
     World(int width, int height);
@@ -43,4 +41,12 @@ public:
     int get_total_cells() const;
     int get_alive_cells() const;
     int get_dead_cells() const;
+
+    void resize(int square_size);
+    void resize(int new_width, int new_height);
+
+    int count_neighbours(int x, int y, bool toroidal);
+    void step(bool toroidal = false);
+    void advance(int steps, bool toroidal = false);
+    const Grid& get_state() const; 
 };
