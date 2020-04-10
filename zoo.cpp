@@ -225,7 +225,23 @@ Grid Zoo::load_ascii(std::string path){
  * @throws
  *      Throws std::runtime_error or sub-class if the file cannot be opened.
  */
+void Zoo::save_ascii(std::string path, Grid grid) {
+    std::ofstream ofs (path, std::ofstream::out);
+    
+    ofs << grid.get_width();
+    ofs << " ";
+    ofs << grid.get_height();
+    ofs << "\n";
 
+    for (int y = 0; y < grid.get_height(); y++) {
+        for (int x = 0; x < grid.get_width(); x++) {
+            char cell = grid.get(x,y);
+            ofs << cell;
+        }
+        ofs << "\n";
+    }
+    ofs.close();
+}
 
 /**
  * Zoo::load_binary(path)
