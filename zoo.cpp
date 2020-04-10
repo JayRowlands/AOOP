@@ -25,7 +25,7 @@
 
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
-
+#include <fstream>
 /**
  * Zoo::glider()
  *
@@ -46,7 +46,17 @@
  * @return
  *      Returns a Grid containing a glider.
  */
+Grid Zoo::glider() {
+    Grid glider(3);
 
+    glider.set(1,0, Cell::ALIVE);
+    glider.set(2,1, Cell::ALIVE);
+    glider.set(0,2, Cell::ALIVE);
+    glider.set(1,2, Cell::ALIVE);
+    glider.set(2,2, Cell::ALIVE);
+    
+    return glider;
+};
 
 /**
  * Zoo::r_pentomino()
@@ -68,7 +78,17 @@
  * @return
  *      Returns a Grid containing a r-pentomino.
  */
+Grid Zoo::r_pentomino() {
+    Grid r_pentomino(3);
 
+    r_pentomino.set(1,0, Cell::ALIVE);
+    r_pentomino.set(2,1, Cell::ALIVE);
+    r_pentomino.set(0,2, Cell::ALIVE);
+    r_pentomino.set(1,2, Cell::ALIVE);
+    r_pentomino.set(2,2, Cell::ALIVE);
+    
+    return r_pentomino;
+};
 
 /**
  * Zoo::light_weight_spaceship()
@@ -91,7 +111,21 @@
  * @return
  *      Returns a grid containing a light weight spaceship.
  */
+Grid Zoo::light_weight_spaceship() {
+    Grid light_weight_spaceship(4,5);
 
+    light_weight_spaceship.set(1,0, Cell::ALIVE);
+    light_weight_spaceship.set(4,0, Cell::ALIVE);
+    light_weight_spaceship.set(0,1, Cell::ALIVE);
+    light_weight_spaceship.set(0,2, Cell::ALIVE);
+    light_weight_spaceship.set(4,2, Cell::ALIVE);
+    light_weight_spaceship.set(0,3, Cell::ALIVE);
+    light_weight_spaceship.set(1,2, Cell::ALIVE);
+    light_weight_spaceship.set(2,2, Cell::ALIVE);
+    light_weight_spaceship.set(3,3, Cell::ALIVE);
+
+    return light_weight_spaceship;
+};
 
 /**
  * Zoo::load_ascii(path)
@@ -117,7 +151,51 @@
  *          - Newline characters are not found when expected during parsing.
  *          - The character for a cell is not the ALIVE or DEAD character.
  */
+Grid Zoo::load_ascii(std::string path){
+    std::ifstream inputFile(path);
+    if (!inputFile.is_open()) {
+    return 1;
+    }
 
+    int readWidth;
+    int readHeight;
+
+    inputFile >> readWidth;
+    inputFile >> readHeight;
+
+    Grid newGrid(readWidth, readHeight);
+    Cell readCell;
+    for (int y = 0; y < readHeight; y++) {
+        for (int x = 0; x < readWidth; x++) {
+            if(!inputFile.eof()) {
+                (char&) readCell = inputFile.get();
+                if (readCell == 10) {
+                    (char&) readCell = inputFile.get();
+                }
+                if (readCell == Cell::DEAD) {
+                    newGrid.set(x,y, Cell::DEAD);
+                } else if (readCell == Cell::ALIVE) { 
+                    newGrid.set(x,y, Cell::ALIVE);
+                }
+            }
+        }
+    }
+    /*
+    for(int y = 0; y < readHeight; y++) {
+        for(int x = 0; x < readWidth; x++) {
+            Cell v = newGrid.get(x,y);
+              if(v == ' ') {
+                std::cout << ' ';
+            } else { 
+                std::cout << '#';
+            }
+        }
+        std::cout << "|\n";
+    }
+    std::cout << "\n";
+    */
+    return newGrid;
+}
 
 /**
  * Zoo::save_ascii(path, grid)
