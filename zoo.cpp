@@ -26,6 +26,7 @@
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
 #include <fstream>
+#include <bitset>
 /**
  * Zoo::glider()
  *
@@ -180,20 +181,6 @@ Grid Zoo::load_ascii(std::string path){
             }
         }
     }
-    /*
-    for(int y = 0; y < readHeight; y++) {
-        for(int x = 0; x < readWidth; x++) {
-            Cell v = newGrid.get(x,y);
-              if(v == ' ') {
-                std::cout << ' ';
-            } else { 
-                std::cout << '#';
-            }
-        }
-        std::cout << "|\n";
-    }
-    std::cout << "\n";
-    */
     return newGrid;
 }
 
@@ -265,7 +252,63 @@ void Zoo::save_ascii(std::string path, Grid grid) {
  *          - The file cannot be opened.
  *          - The file ends unexpectedly.
  */
+Grid Zoo::load_binary(std::string path) {
+    
+    std::ifstream inputFile(path, std::ios_base::binary);
+    
+    Grid newGrid;
+    int readWidth;
+    int readHeight;
 
+    inputFile.read((reinterpret_cast<char*>(&readWidth)),sizeof(int));
+    inputFile.read((reinterpret_cast<char*>(&readHeight)),sizeof(int));
+    newGrid.resize(readWidth,readHeight);
+    newGrid.grid.clear();
+
+    if (inputFile) {
+        inputFile.seekg (0, inputFile.end);
+        int length = inputFile.tellg();
+        inputFile.seekg (0, inputFile.beg);
+
+        char * buffer = new char [length];
+        inputFile.get (buffer,length);
+        for (int i=8;i < length; i++) {
+
+            std::bitset<8> byte (buffer[i]);
+            std::string newString = byte.to_string();
+            
+            for (int j = 7; j >= 0; j--){
+                int total = 0;
+                if (total != newGrid.get_total_cells()) {
+                    if(newString[j] == '1') {
+                        newGrid.grid.push_back(Cell::ALIVE);
+                    } else {
+                        newGrid.grid.push_back(Cell::DEAD);
+                    }
+                    total++;
+                }
+            }
+        }
+    inputFile.close();
+    delete[] buffer;
+    }
+  
+   /*
+    for (int y = 0; y < readHeight; y++) {
+        for (int x = 0; x < readWidth; x++) {
+            Cell v = newGrid.get(x,y);
+            if (v == 32) {
+                std::cout << " ";
+            } else if (v == 35) {
+                std::cout << "#";
+            }
+        }
+        std::cout << "|\n";
+    }
+    std::cout << "\n";
+    */
+    return newGrid;
+}
 
 /**
  * Zoo::save_binary(path, grid)
