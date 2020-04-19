@@ -265,59 +265,53 @@ void Zoo::save_ascii(std::string path, Grid grid) {
  *          - The file ends unexpectedly.
  */
 Grid Zoo::load_binary(std::string path) {
-    
     std::ifstream inputFile(path, std::ios_base::binary);
+    if (!inputFile) {
+        throw std::runtime_error("File cannot be opened");
+    }
     
     Grid newGrid;
     int readWidth;
     int readHeight;
-
+    
     inputFile.read((reinterpret_cast<char*>(&readWidth)),sizeof(int));
     inputFile.read((reinterpret_cast<char*>(&readHeight)),sizeof(int));
     newGrid.resize(readWidth,readHeight);
     newGrid.grid.clear();
 
-    if (inputFile) {
-        inputFile.seekg (0, inputFile.end);
-        int length = inputFile.tellg();
-        inputFile.seekg (0, inputFile.beg);
+    inputFile.seekg (0, inputFile.end);
+    int length = inputFile.tellg();
+    inputFile.seekg (0, inputFile.beg);
 
+    if(inputFile) {
         char * buffer = new char [length];
         inputFile.read (buffer,length);
         int total = 0;
         for (int i=8;i < length; i++) {
+            
             std::bitset<8> byte (buffer[i]);
             std::string newString = byte.to_string();
             for (int j = 7; j >= 0; j--){
-                if (total <= newGrid.get_total_cells()) {
+                if (total < newGrid.get_total_cells()) {
+                    
                     if(newString[j] == '1') {
                         newGrid.grid.push_back(Cell::ALIVE);
                     } else if (newString[j] == '0') {
                         newGrid.grid.push_back(Cell::DEAD);
+                    } else {
+                        throw std::runtime_error("Malformed");
                     }
+                    std::cout << total << std::endl;
                     total++;
                 }
             }
         }
-        
-    delete[] buffer;
-    inputFile.close();
-    }
-  
-   
-    for (int y = 0; y < readHeight; y++) {
-        for (int x = 0; x < readWidth; x++) {
-            Cell v = newGrid.get(x,y);
-            if (v == 32) {
-                std::cout << " ";
-            } else if (v == 35) {
-                std::cout << "#";
-            }
+        if (total != newGrid.get_total_cells()) {
+            throw std::runtime_error("Malformed file");
         }
-        std::cout << "|\n";
+        delete[] buffer;
+        inputFile.close();
     }
-    std::cout << "\n";
-    
     return newGrid;
 }
 
@@ -351,7 +345,9 @@ Grid Zoo::load_binary(std::string path) {
  */
 void Zoo::save_binary(std::string path, Grid grid) {
     std::ofstream outputFile(path);
-    
+    if (!outputFile.is_open()) {
+        throw std::runtime_error("File cannot be opened");
+    }
     int width = grid.get_width();
     int height = grid.get_height();
     
