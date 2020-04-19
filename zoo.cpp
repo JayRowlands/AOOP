@@ -84,10 +84,10 @@ Grid Zoo::r_pentomino() {
     Grid r_pentomino(3);
 
     r_pentomino.set(1,0, Cell::ALIVE);
-    r_pentomino.set(2,1, Cell::ALIVE);
-    r_pentomino.set(0,2, Cell::ALIVE);
+    r_pentomino.set(2,0, Cell::ALIVE);
+    r_pentomino.set(0,1, Cell::ALIVE);
+    r_pentomino.set(1,1, Cell::ALIVE);
     r_pentomino.set(1,2, Cell::ALIVE);
-    r_pentomino.set(2,2, Cell::ALIVE);
     
     return r_pentomino;
 };
@@ -114,7 +114,7 @@ Grid Zoo::r_pentomino() {
  *      Returns a grid containing a light weight spaceship.
  */
 Grid Zoo::light_weight_spaceship() {
-    Grid light_weight_spaceship(4,5);
+    Grid light_weight_spaceship(5,4);
 
     light_weight_spaceship.set(1,0, Cell::ALIVE);
     light_weight_spaceship.set(4,0, Cell::ALIVE);
@@ -122,8 +122,8 @@ Grid Zoo::light_weight_spaceship() {
     light_weight_spaceship.set(0,2, Cell::ALIVE);
     light_weight_spaceship.set(4,2, Cell::ALIVE);
     light_weight_spaceship.set(0,3, Cell::ALIVE);
-    light_weight_spaceship.set(1,2, Cell::ALIVE);
-    light_weight_spaceship.set(2,2, Cell::ALIVE);
+    light_weight_spaceship.set(1,3, Cell::ALIVE);
+    light_weight_spaceship.set(2,3, Cell::ALIVE);
     light_weight_spaceship.set(3,3, Cell::ALIVE);
 
     return light_weight_spaceship;
