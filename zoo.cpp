@@ -301,7 +301,7 @@ Grid Zoo::load_binary(std::string path) {
                     } else {
                         throw std::runtime_error("Malformed");
                     }
-                    std::cout << total << std::endl;
+                    
                     total++;
                 }
             }
