@@ -28,6 +28,7 @@
 #include <fstream>
 #include <bitset>
 #include <algorithm>
+#include <stdexcept>
 /**
  * Zoo::glider()
  *
@@ -155,6 +156,10 @@ Grid Zoo::light_weight_spaceship() {
  */
 Grid Zoo::load_ascii(std::string path){
     std::ifstream inputFile(path);
+    if (!inputFile) {
+        throw std::runtime_error("File not found");
+    }
+
     if (!inputFile.is_open()) {
     return 1;
     }
@@ -164,20 +169,24 @@ Grid Zoo::load_ascii(std::string path){
 
     inputFile >> readWidth;
     inputFile >> readHeight;
-
+    if (readWidth < 0 || readHeight < 0) {
+        throw std::runtime_error("Incorrect height or width.");
+    }
     Grid newGrid(readWidth, readHeight);
-    Cell readCell;
+    char readCell;
     for (int y = 0; y < readHeight; y++) {
         for (int x = 0; x < readWidth; x++) {
             if(!inputFile.eof()) {
-                (char&) readCell = inputFile.get();
-                if (readCell == 10) {
-                    (char&) readCell = inputFile.get();
+                inputFile.get (readCell);
+                if (readCell == '\n') {
+                    readCell = inputFile.get();
                 }
                 if (readCell == Cell::DEAD) {
                     newGrid.set(x,y, Cell::DEAD);
                 } else if (readCell == Cell::ALIVE) { 
                     newGrid.set(x,y, Cell::ALIVE);
+                } else {
+                    throw std::runtime_error("Malformed");
                 }
             }
         }
