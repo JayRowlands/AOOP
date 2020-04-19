@@ -15,14 +15,8 @@
 #include "grid.h"
 // Include the minimal number of headers needed to support your implementation.
 // #include ...
-#include <stdlib.h>
-#include <iostream>
-#include <stdio.h>
-#include <sstream>
+
 #include <algorithm>
-#include <vector>
-#include <iostream>
-#include <ostream>
 
 /**
  * Grid::Grid()

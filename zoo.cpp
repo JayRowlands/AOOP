@@ -27,8 +27,6 @@
 // #include ...
 #include <fstream>
 #include <bitset>
-#include <algorithm>
-#include <stdexcept>
 /**
  * Zoo::glider()
  *
@@ -301,7 +299,7 @@ Grid Zoo::load_binary(std::string path) {
                     } else {
                         throw std::runtime_error("Malformed");
                     }
-                    
+
                     total++;
                 }
             }
