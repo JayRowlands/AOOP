@@ -27,6 +27,7 @@
 // #include ...
 #include <fstream>
 #include <bitset>
+#include <algorithm>
 /**
  * Zoo::glider()
  *
@@ -271,29 +272,28 @@ Grid Zoo::load_binary(std::string path) {
         inputFile.seekg (0, inputFile.beg);
 
         char * buffer = new char [length];
-        inputFile.get (buffer,length);
+        inputFile.read (buffer,length);
+        int total = 0;
         for (int i=8;i < length; i++) {
-
             std::bitset<8> byte (buffer[i]);
             std::string newString = byte.to_string();
-            
             for (int j = 7; j >= 0; j--){
-                int total = 0;
-                if (total != newGrid.get_total_cells()) {
+                if (total <= newGrid.get_total_cells()) {
                     if(newString[j] == '1') {
                         newGrid.grid.push_back(Cell::ALIVE);
-                    } else {
+                    } else if (newString[j] == '0') {
                         newGrid.grid.push_back(Cell::DEAD);
                     }
                     total++;
                 }
             }
         }
-    inputFile.close();
+        
     delete[] buffer;
+    inputFile.close();
     }
   
-   /*
+   
     for (int y = 0; y < readHeight; y++) {
         for (int x = 0; x < readWidth; x++) {
             Cell v = newGrid.get(x,y);
@@ -306,7 +306,7 @@ Grid Zoo::load_binary(std::string path) {
         std::cout << "|\n";
     }
     std::cout << "\n";
-    */
+    
     return newGrid;
 }
 
@@ -338,4 +338,32 @@ Grid Zoo::load_binary(std::string path) {
  * @throws
  *      Throws std::runtime_error or sub-class if the file cannot be opened.
  */
+void Zoo::save_binary(std::string path, Grid grid) {
+    std::ofstream outputFile(path);
+    
+    int width = grid.get_width();
+    int height = grid.get_height();
+    
+    outputFile.write((char*)&width, 4);
+    outputFile.write((char*)&height, 4);
 
+    int count = 0;
+    int padSize = grid.get_total_cells() + (grid.get_total_cells()%8);
+    std::bitset<8> byte;
+    for (int i = 0; i < padSize; i++) {
+        if (grid.grid[i] == Cell::ALIVE) {
+            byte[count] = 1;
+        } else {
+            byte[count] = 0;
+        }      
+        
+        count++;
+        if (count == 8) {
+            outputFile.write((char*)&byte,1);
+            count = 0;
+        }
+        
+    }
+
+    outputFile.close();
+}
